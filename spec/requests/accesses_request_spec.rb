@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.describe 'Accesses', type: :request do
   describe 'GET /new' do
     let!(:link) { create :link }
-    let!(:ip_country) { create :ip_country }
 
     it 'returns http success' do
       get "/#{link.slug}"

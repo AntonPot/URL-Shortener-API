@@ -1,5 +1,10 @@
 class AccessesController < ApplicationController
-  # This should ideally be a post request because it will perist a record
+  skip_before_action :authenticate_user!
+
+  # NOTE: #new should in this case ideally be a POST action
+  # because it will create a record in the background.
+  # Open-ended routes are only available for GET requests.
+  # For shortenting the URL it made more sense to go with GET.
   def new
     link = Link.find_by(slug: slug)
     return root_path unless link

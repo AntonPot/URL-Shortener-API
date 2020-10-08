@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  # NOTE: Messing with request object is a No-No, but I'm adding it here to get some IP data
+  # NOTE: Messing with request object is a No-No, but I'm adding it here to get some IPs
   before_action :inject_public_ip, if: -> { Rails.env.development? }
   before_action :authenticate_user!
 

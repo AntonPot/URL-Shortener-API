@@ -31,6 +31,9 @@ module UrlShortener
 
     # Don't generate system test files.
     config.generators.system_tests = nil
-    config.autoload_paths += [Rails.root.join('/app/clients')]
+    config.autoload_paths += [
+      Rails.root.join('/app/clients'),
+      Rails.root.join('/app/services/*')
+    ]
   end
 end

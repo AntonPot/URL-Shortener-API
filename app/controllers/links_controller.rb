@@ -8,17 +8,9 @@ class LinksController < ApplicationController
   end
 
   def create
-    link = Link.new(link_params) do |l|
-      l.user = current_user
-    end
-
-    if link.save
-      flash[:alert] = 'Link successfully created'
-      redirect_to '/'
-    else
-      flash[:alert] = link.errors.full_messages.join('. ')
-      redirect_to '/links/new'
-    end
+    service = Links::Create.call(user: current_user, url: link_params[:url], slug: link_params[:slug])
+    flash[:alert] = service.alert_message
+    service.successful? ? redirect_to('/') : redirect_to('/links/new')
   end
 
   def download

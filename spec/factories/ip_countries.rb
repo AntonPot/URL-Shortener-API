@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :ip_country do
-    country_code { "MyString" }
-    country_name { "MyString" }
-    country_emoji { "MyString" }
+    country_name { 'Germany' }
+    country_code { 'DE' }
+    country_emoji { '🇩🇪' }
   end
 end

@@ -1,3 +1,7 @@
+# NOTE: Using scopes and linking them toghether is a useful way
+# to limit the load on DB. Having fewer more complexed queries
+# improves performance compared to many simple ones
+
 class Link < ApplicationRecord
   has_many :accesses, dependent: :delete_all
   has_many :ip_countries, through: :accesses
