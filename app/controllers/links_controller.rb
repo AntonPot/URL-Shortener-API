@@ -1,7 +1,7 @@
 class LinksController < ApplicationController
-  def index
-    @links = Link.all
-  end
+  before_action :set_links, only: %i[index download]
+
+  def index; end
 
   def new
     @link = Link.new
@@ -12,10 +12,17 @@ class LinksController < ApplicationController
 
     if link.save
       flash[:alert] = 'Link successfully created'
-      redirect_to '/', status: :created
+      redirect_to '/'
     else
       flash[:alert] = link.errors.full_messages.join('. ')
       redirect_to '/links/new'
+    end
+  end
+
+  def download
+    respond_to do |f|
+      f.html
+      f.csv { send_data @links.to_csv, filename: "links-on-#{Time.zone.today}.csv" }
     end
   end
 
@@ -23,5 +30,9 @@ class LinksController < ApplicationController
 
   def link_params
     params.require(:link).permit(:url, :slug)
+  end
+
+  def set_links
+    @links = Link.all
   end
 end

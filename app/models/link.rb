@@ -8,6 +8,22 @@ class Link < ApplicationRecord
   validates :slug, uniqueness: true
   validates :url, url: true
 
+  def self.to_csv
+    headers = %w[url slug access_count countries_count]
+
+    CSV.generate(headers: true) do |csv|
+      csv << headers
+
+      all.find_each do |link|
+        row = link.attributes.select { |k, _| headers.include?(k) }
+        row['access_count'] = link.accesses.count.to_s
+        row['countries_count'] = link.ip_countries.count.to_s
+
+        csv << row
+      end
+    end
+  end
+
   private
 
   def assign_slug

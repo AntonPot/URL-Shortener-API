@@ -1,7 +1,9 @@
 <section>
   <h5><%= flash[:alert] %></h5>
   <br>
-  <%= link_to 'Create new short URL', new_link_path %>
+  <%= link_to 'Create new short URL', new_link_path %><br>
+  <%= link_to 'Download CSV', download_links_path(format: "csv" ) %>
+
   <table>
     <thead>
       <tr>

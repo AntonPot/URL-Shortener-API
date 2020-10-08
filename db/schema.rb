@@ -37,7 +37,6 @@ ActiveRecord::Schema.define(version: 2020_10_08_075318) do
   create_table "links", force: :cascade do |t|
     t.string "url", null: false
     t.string "slug", null: false
-    t.integer "usage_counter"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["slug"], name: "index_links_on_slug"
