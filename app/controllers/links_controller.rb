@@ -8,7 +8,9 @@ class LinksController < ApplicationController
   end
 
   def create
-    link = Link.new(link_params)
+    link = Link.new(link_params) do |l|
+      l.user = current_user
+    end
 
     if link.save
       flash[:alert] = 'Link successfully created'
@@ -33,6 +35,6 @@ class LinksController < ApplicationController
   end
 
   def set_links
-    @links = Link.with_count_values
+    @links = Link.with_count_values.with_user
   end
 end

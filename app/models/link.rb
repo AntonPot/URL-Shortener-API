@@ -1,6 +1,7 @@
 class Link < ApplicationRecord
   has_many :accesses, dependent: :delete_all
   has_many :ip_countries, through: :accesses
+  belongs_to :user
 
   before_validation :assign_slug
 
@@ -22,12 +23,21 @@ class Link < ApplicationRecord
     SQL
   }
 
+  scope :with_user, lambda {
+    select <<~SQL
+      (
+        SELECT users.email FROM users
+        WHERE users.id = links.user_id
+      ) AS user_email
+    SQL
+  }
+
   def self.to_csv
-    headers = %w[url slug access_count countries_count]
+    headers = %w[url slug user_email access_count countries_count]
 
     CSV.generate(headers: true) do |csv|
       csv << headers
-      with_count_values.each { |link| csv << link.attributes }
+      with_count_values.with_user.each { |link| csv << link.attributes }
     end
   end
 
