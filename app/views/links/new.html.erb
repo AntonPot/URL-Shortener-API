@@ -1,0 +1,13 @@
+<section>
+  <h3>Please insert your URL</h3>
+
+  <h5><%= flash[:alert] %></h5>
+
+  <%= form_with model: @link do |f| %>
+    Long URL: <%= f.text_field :url %><br>
+    Slug (optional): <%= f.text_field :slug %><br>
+    <%= f.submit 'Create' %>
+  <% end %>
+  <br>
+  <%= link_to('Back', root_path) %>
+</section>

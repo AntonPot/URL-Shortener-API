@@ -1,0 +1,23 @@
+<section>
+  <h5><%= flash[:alert] %></h5>
+  <br>
+  <%= link_to 'Create new short URL', new_link_path %>
+  <table>
+    <thead>
+      <tr>
+        <th>Long URL</th>
+        <th>Short URL</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @links.each do |link| %>
+      <tr>
+        <% short_url = "http://localhost:3000/#{link.slug}"%>
+        <td><a href=<%= link.url %>><%= link.url %></a></td>
+        <td><a href=<%= short_url %>><%= short_url %></a></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</section>
