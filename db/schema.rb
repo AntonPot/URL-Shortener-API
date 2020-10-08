@@ -26,7 +26,6 @@ ActiveRecord::Schema.define(version: 2020_10_08_075318) do
   end
 
   create_table "ip_countries", force: :cascade do |t|
-    t.string "address", null: false
     t.string "country_code"
     t.string "country_name"
     t.string "country_emoji"

@@ -11,7 +11,11 @@ RSpec.describe 'Accesses', type: :request do
     end
 
     it 'creates new Access record' do
-      expect { get "/#{link.slug}" }.to change { Access.count }.by(1)
+      allow(RecordLinkUsageJob).to receive(:perform_later)
+
+      get "/#{link.slug}"
+
+      expect(RecordLinkUsageJob).to have_received(:perform_later).once
     end
   end
 end

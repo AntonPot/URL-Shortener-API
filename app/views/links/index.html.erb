@@ -9,15 +9,19 @@
       <tr>
         <th>Long URL</th>
         <th>Short URL</th>
+        <th>Number of Clicks</th>
+        <th>Number of Countries Clicks Came From</th>
       </tr>
     </thead>
 
     <tbody>
       <% @links.each do |link| %>
       <tr>
-        <% short_url = "http://localhost:3000/#{link.slug}"%>
+        <% short_url = "#{Rails.configuration.x.host}/#{link.slug}"%>
         <td><a href=<%= link.url %>><%= link.url %></a></td>
         <td><a href=<%= short_url %>><%= short_url %></a></td>
+        <td><%= link.access_count %></td>
+        <td><%= link.countries_count %></td>
       </tr>
       <% end %>
     </tbody>

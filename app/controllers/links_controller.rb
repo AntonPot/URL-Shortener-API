@@ -33,6 +33,6 @@ class LinksController < ApplicationController
   end
 
   def set_links
-    @links = Link.all
+    @links = Link.with_count_values
   end
 end
