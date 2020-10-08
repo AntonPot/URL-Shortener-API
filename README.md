@@ -1,24 +1,35 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+URL Shortener generates short URLs.
+It allows users to sign in and create shorter versions of URLs which will then redirect
+to original destination.
+Users with account can download link usage data in CSV file.
 
-Things you may want to cover:
+## Setup
+Postgres:
+```
+brew install postgresql
+brew services start postgresql
+```
 
-* Ruby version
+Yarn:
+```
+brew install yarn
+```
 
-* System dependencies
+Install dependencies:
+```
+bundle install
+```
 
-* Configuration
+Create DB:
+```
+rake db:create db:migrate db:seed
+```
 
-* Database creation
+## Run
+```
+rails s
+```
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Open [Localhost:3000](http://localhost:3000)
