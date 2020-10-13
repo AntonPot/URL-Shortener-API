@@ -12,6 +12,14 @@ class Link < ApplicationRecord
   validates :url, :slug, presence: true
   validates :slug, uniqueness: true
   validates :url, url: true
+  validates :slug, length: { maximum: 10 }
+
+  # Having issues here with preventing space characters in slug
+  # validates :slug, format: {
+  #   with: /[^\s]/,
+  #   message: 'invalid characters entered'
+  # }
+  validate :existing_urls
 
   scope :with_count_values, lambda {
     select(:url, :slug).select <<~SQL
@@ -36,15 +44,6 @@ class Link < ApplicationRecord
     SQL
   }
 
-  def self.to_csv
-    headers = %w[url slug user_email access_count countries_count]
-
-    CSV.generate(headers: true) do |csv|
-      csv << headers
-      with_count_values.with_user.each { |link| csv << link.attributes }
-    end
-  end
-
   private
 
   def assign_slug
@@ -53,5 +52,9 @@ class Link < ApplicationRecord
 
       self.slug = SecureRandom.alphanumeric(10)
     end
+  end
+
+  def existing_urls
+    errors.add(:url, 'is already in DB') if Link.where(url: url, user: user).exists?
   end
 end

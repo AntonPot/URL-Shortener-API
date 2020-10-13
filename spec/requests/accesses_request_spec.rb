@@ -4,7 +4,7 @@ RSpec.describe 'Accesses', type: :request do
   describe 'GET /new' do
     let!(:link) { create :link }
 
-    it 'returns http success' do
+    it 'returns http redirect' do
       get "/#{link.slug}"
       expect(response).to have_http_status(:redirect)
     end

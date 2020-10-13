@@ -7,7 +7,7 @@ class AccessesController < ApplicationController
   # For shortenting the URL it made more sense to go with GET.
   def new
     link = Link.find_by(slug: slug)
-    return root_path unless link
+    return redirect_to(root_path) unless link
 
     RecordLinkUsageJob.perform_later(link, request.remote_ip)
     redirect_to(link.url)

@@ -1,12 +1,12 @@
 <section>
   <% if current_user %>
 
-    <h3>Hello <%= current_user.parse_email.capitalize %></h5>
+  <h5>Hello <%= current_user.username.capitalize %></h5>
 
     <h5><%= flash[:alert] %></h5>
     <br>
     <%= link_to 'Create new short URL', new_link_path %><br>
-    <%= link_to 'Download CSV', download_links_path(format: "csv" ) %>
+    <%= link_to 'Download CSV', new_download_path(format: "csv" ) %>
 
     <table>
       <thead>
@@ -35,9 +35,9 @@
     <br>
 
     <%= link_to('Sign Out', destroy_user_session_path, :method => 'delete') %>
-  <% else %>
+    <% else %>
     <%= link_to('Login', sign_in_path) %>
     <br>
     <%= link_to('Register', sign_up_path) %>
-  <% end %>
+    <% end %>
 </section>

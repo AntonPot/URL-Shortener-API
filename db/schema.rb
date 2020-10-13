@@ -39,7 +39,7 @@ ActiveRecord::Schema.define(version: 2020_10_08_153654) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
-    t.index ["slug"], name: "index_links_on_slug"
+    t.index ["slug"], name: "index_links_on_slug", unique: true
     t.index ["user_id"], name: "index_links_on_user_id"
   end
 

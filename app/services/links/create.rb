@@ -5,7 +5,7 @@
 
 module Links
   class Create
-    def self.call(args)
+    def self.run(args)
       service = new(args[:user], args[:url], args[:slug])
       service.link
       service.save_link

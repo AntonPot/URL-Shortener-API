@@ -5,7 +5,7 @@ RSpec.describe User, type: :model do
 
   it { is_expected.to respond_to :links }
 
-  describe '#parse_email' do
-    it { expect(user.parse_email).to eq 'marko' }
+  describe '#username' do
+    it { expect(user.username).to eq 'marko' }
   end
 end

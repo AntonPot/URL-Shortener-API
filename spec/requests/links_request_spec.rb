@@ -20,7 +20,7 @@ RSpec.describe 'Links', type: :request do
   end
 
   describe 'GET /create' do
-    it 'returns http success' do
+    it 'returns http redirect' do
       post '/links', params: {link: {url: 'https://google.com'}}
       expect(response).to have_http_status(:redirect)
     end
@@ -32,4 +32,6 @@ RSpec.describe 'Links', type: :request do
       expect(response).to have_http_status(:success)
     end
   end
+
+  # MORE TESTS
 end

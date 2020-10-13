@@ -11,4 +11,6 @@ RSpec.describe RecordLinkUsageJob, type: :job do
   it 'creates the job' do
     expect { job }.to change(ActiveJob::Base.queue_adapter.enqueued_jobs, :size).by(1)
   end
+
+  # TESTS
 end
