@@ -1,0 +1,218 @@
+diff --git a/app/clients/geoapi.rb b/app/clients/geoapi.rb
+index e16a3fd..e22482b 100644
+--- a/app/clients/geoapi.rb
++++ b/app/clients/geoapi.rb
+@@ -2,7 +2,7 @@ class Geoapi
+   include HTTParty
+   base_uri 'api.ip2country.info'
+ 
+-  class << self
++  class << self # "Class-oriented programming".
+     def fetch(ip_address)
+       get('/ip', query: ip_address)
+     end
+diff --git a/app/controllers/accesses_controller.rb b/app/controllers/accesses_controller.rb
+index 5b08103..5d34ea4 100644
+--- a/app/controllers/accesses_controller.rb
++++ b/app/controllers/accesses_controller.rb
+@@ -5,9 +5,14 @@ class AccessesController < ApplicationController
+   # because it will create a record in the background.
+   # Open-ended routes are only available for GET requests.
+   # For shortenting the URL it made more sense to go with GET.
++  #
++  # It doesn't really make sense to think about POST for the action.
++  # The MAIN purpose of the endpoint is to return information. A record created in the background
++  # is a (important but) secondary concern. If any (secondary) side effect forces us to have POST, any GET endpoint
++  # which (say) does logging should use POST. Right?
+   def new
+     link = Link.find_by(slug: slug)
+-    return root_path unless link
++    return root_path unless link # How does it work? What does it mean to `return` a string from a controller action?
+ 
+     RecordLinkUsageJob.perform_later(link, request.remote_ip)
+     redirect_to(link.url)
+diff --git a/app/jobs/record_link_usage_job.rb b/app/jobs/record_link_usage_job.rb
+index f5f0845..c71ba81 100644
+--- a/app/jobs/record_link_usage_job.rb
++++ b/app/jobs/record_link_usage_job.rb
+@@ -8,8 +8,8 @@ class RecordLinkUsageJob < ApplicationJob
+   def perform(link, ip)
+     geoapi_response = Geoapi.fetch(ip).to_h
+     ip_country_data = IpCountry.parse_geoapi_response(geoapi_response)
+-    ip_country = IpCountry.find_or_create_by(ip_country_data)
+-
+-    Access.create!(address: ip, link: link, ip_country: ip_country)
++    ip_country = IpCountry.find_or_create_by(ip_country_data)        #
++                                                                     # [MAJOR] Should be transactional.
++    Access.create!(address: ip, link: link, ip_country: ip_country)  #
+   end
+ end
+diff --git a/app/models/access.rb b/app/models/access.rb
+index 940f7d1..423dcb5 100644
+--- a/app/models/access.rb
++++ b/app/models/access.rb
+@@ -1,4 +1,9 @@
+ class Access < ApplicationRecord
+   belongs_to :link
+   belongs_to :ip_country
++
++  # Better to have presence validation because schema.rb has `null: false`:
++  #     t.string "address", null: false
++  #     t.bigint "link_id", null: false
++  #     t.bigint "ip_country_id", null: false
+ end
+diff --git a/app/models/link.rb b/app/models/link.rb
+index 44f7d60..c321bca 100644
+--- a/app/models/link.rb
++++ b/app/models/link.rb
+@@ -12,6 +12,7 @@ class Link < ApplicationRecord
+   validates :url, :slug, presence: true
+   validates :slug, uniqueness: true
+   validates :url, url: true
++  # No validation on length of slug?
+ 
+   scope :with_count_values, lambda {
+     select(:url, :slug).select <<~SQL
+@@ -36,6 +37,7 @@ class Link < ApplicationRecord
+     SQL
+   }
+ 
++  # Better to be extracted to a service.
+   def self.to_csv
+     headers = %w[url slug user_email access_count countries_count]
+ 
+diff --git a/app/services/links/create.rb b/app/services/links/create.rb
+index 5075806..001b34a 100644
+--- a/app/services/links/create.rb
++++ b/app/services/links/create.rb
+@@ -7,7 +7,7 @@ module Links
+   class Create
+     def self.call(args)
+       service = new(args[:user], args[:url], args[:slug])
+-      service.link
++      service.link       # Redundant step.
+       service.save_link
+ 
+       service
+@@ -26,7 +26,7 @@ module Links
+     end
+ 
+     def alert_message
+-      successful? ? 'Link successfuly created' : link.errors.full_messages.join('. ')
++      successful? ? 'Link successfuly created' : link.errors.full_messages.join('. ') # Typo.
+     end
+ 
+     def successful?
+diff --git a/app/views/accesses/new.html.erb b/app/views/accesses/new.html.erb
+index e69de29..552423d 100644
+--- a/app/views/accesses/new.html.erb
++++ b/app/views/accesses/new.html.erb
+@@ -0,0 +1 @@
++<!-- Dead code. -->
+diff --git a/app/views/links/create.html.erb b/app/views/links/create.html.erb
+index b4752fb..1ca810b 100644
+--- a/app/views/links/create.html.erb
++++ b/app/views/links/create.html.erb
+@@ -1,2 +1,4 @@
+ <h1>Links#create</h1>
+ <p>Find me in app/views/links/create.html.erb</p>
++
++<!-- Garbage ^ -->
+diff --git a/app/views/links/download.html.erb b/app/views/links/download.html.erb
+index e69de29..9fae52c 100644
+--- a/app/views/links/download.html.erb
++++ b/app/views/links/download.html.erb
+@@ -0,0 +1 @@
++<!-- Garbage -->
+\ No newline at end of file
+diff --git a/app/views/links/index.html.erb b/app/views/links/index.html.erb
+index c76a0dc..c95bdeb 100644
+--- a/app/views/links/index.html.erb
++++ b/app/views/links/index.html.erb
+@@ -1,12 +1,12 @@
+ <section>
+   <% if current_user %>
+ 
+-    <h3>Hello <%= current_user.parse_email.capitalize %></h5>
++    <h3>Hello <%= current_user.parse_email.capitalize %></h5> <!-- H3 doesn't match H5 -->
+ 
+     <h5><%= flash[:alert] %></h5>
+     <br>
+     <%= link_to 'Create new short URL', new_link_path %><br>
+-    <%= link_to 'Download CSV', download_links_path(format: "csv" ) %>
++    <%= link_to 'Download CSV', download_links_path(format: "csv" ) %> <!-- UX issue. A user has no idea what does it mean. -->
+ 
+     <table>
+       <thead>
+diff --git a/config/routes.rb b/config/routes.rb
+index 505e979..72c80f6 100644
+--- a/config/routes.rb
++++ b/config/routes.rb
+@@ -1,11 +1,15 @@
+ Rails.application.routes.draw do
+   devise_for :users
+-  resources :accesses, only: :create
++  resources :accesses, only: :create # I see only #new in the controller.
+   resources :links, only: %i[index new create] do
+-    get 'download', on: :collection
++    get 'download', on: :collection # Should be a dedicated RESTful controller `resource :download, only: :show`
+   end
+ 
+   get '*slug', to: 'accesses#new'
+ 
+   root 'links#index'
+ end
++
++# It is better to have two different sub-realms of the app
++# * a part for end users (who only use shor urls)
++# * a part for "editors" (who create urls and use statistics)
+diff --git a/db/schema.rb b/db/schema.rb
+index 1237f23..787e5da 100644
+--- a/db/schema.rb
++++ b/db/schema.rb
+@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 2020_10_08_153654) do
+     t.datetime "created_at", precision: 6, null: false
+     t.datetime "updated_at", precision: 6, null: false
+   end
++  # [MAJOR] Needs uniq index on country_code.
+ 
+   create_table "links", force: :cascade do |t|
+     t.string "url", null: false
+diff --git a/spec/jobs/record_link_usage_job_spec.rb b/spec/jobs/record_link_usage_job_spec.rb
+index 2a24d62..10c77df 100644
+--- a/spec/jobs/record_link_usage_job_spec.rb
++++ b/spec/jobs/record_link_usage_job_spec.rb
+@@ -9,6 +9,6 @@ RSpec.describe RecordLinkUsageJob, type: :job do
+   subject(:job) { RecordLinkUsageJob.perform_later(link, ip) }
+ 
+   it 'creates the job' do
+-    expect { job }.to change(ActiveJob::Base.queue_adapter.enqueued_jobs, :size).by(1)
++    expect { job }.to change(ActiveJob::Base.queue_adapter.enqueued_jobs, :size).by(1) # It tests the (ActiveJob) framework. It doesn't test domain logic.
+   end
+ end
+diff --git a/spec/requests/accesses_request_spec.rb b/spec/requests/accesses_request_spec.rb
+index 25e4cd9..1b4f1f5 100644
+--- a/spec/requests/accesses_request_spec.rb
++++ b/spec/requests/accesses_request_spec.rb
+@@ -4,7 +4,7 @@ RSpec.describe 'Accesses', type: :request do
+   describe 'GET /new' do
+     let!(:link) { create :link }
+ 
+-    it 'returns http success' do
++    it 'returns http success' do # Wrong title. It doesn't return 'success". It redirects.
+       get "/#{link.slug}"
+       expect(response).to have_http_status(:redirect)
+     end
+diff --git a/spec/requests/links_request_spec.rb b/spec/requests/links_request_spec.rb
+index 511f683..68ec822 100644
+--- a/spec/requests/links_request_spec.rb
++++ b/spec/requests/links_request_spec.rb
+@@ -20,7 +20,7 @@ RSpec.describe 'Links', type: :request do
+   end
+ 
+   describe 'GET /create' do
+-    it 'returns http success' do
++    it 'returns http success' do # Wrong title. It doesn't return 'success". It redirects.
+       post '/links', params: {link: {url: 'https://google.com'}}
+       expect(response).to have_http_status(:redirect)
+     end

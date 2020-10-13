@@ -1,0 +1,35 @@
+- Missing unique index on Link's slug
+- `User#parse_email` - wrong method name 
+- `IpCountry` is bad name as it does not work with IP at all - it should be just `Country`
+- `Access` - missing 3 presence validations
+- `Access#address` should be `ip_address` and ideally should use PostreSQL native IP type
+- `Access` t.bigint "ip_country_id", null: false but `IpCountry.has_many :accesses, dependent: :nullify`. PG exception will be raised on IpCountry deletion
+- `IpCountry.parse_geoapi_response` must be a service
+- `IpCountry.parse_geoapi_response` is a wrong name as it does not parse parameters but deletes one of them
+- `IpCountry.parse_geoapi_response` magic string `'country_code3'`
+- `IpCountry.parse_geoapi_response` fails if nil is given
+- `IpCountry` - country_code, country_name and country_emoji can be empty at the same time
+- `IpCountry#country_code` - better to validate inclusion
+- `IpCountry#country_code` - should be required (and null: false)
+- `IpCountry#country_code` - must be unique
+- Thus the most important question is - does entire `IpCountry` make sense (taking into account maintenance cost)?
+- `Link#to_csv` must be a service
+- `Link` - uniqueness of url per user
+- `Link` - missing length validation for slug
+- `Link` - missing format validation for slug so any trash is allowed: `"                       ____"   '     '?`
+- `Link` - no tests for scopes and `to_csv`
+- `Create.call` - Class-oriented programming
+- `Create#link` should be `build_link`
+- `Create` is not tested at all
+- `RecordLinkUsageJob` Should be transactional
+- `RecordLinkUsageJob` is not tested at all
+- `get 'download', on: :collection` - should be a separate resource
+- `resources :accesses, only: :create` and `app/views/links/create.html.erb` are not used
+- <h3>.....</h5> in links/index.html.erb
+- `return root_path unless link` AccessesController - How does it work? What does it mean to `return` a string from a controller action?
+- Redundant new.html.erb in AccessesController
+- (minor) `LinksController#set_links` should be `load` or `find`
+- `LinksController#download.html` is a trash
+- `LinksController` - named routes should be used instead of `redirect_to('/') : redirect_to('/links/new')`
+- `LinksController` - tests are poor
+- `returns http success` in `accesses_request_spec` and `links_request_spec` - Wrong title. It doesn't return 'success". It redirects.
