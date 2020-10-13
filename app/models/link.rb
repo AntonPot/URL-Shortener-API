@@ -13,12 +13,10 @@ class Link < ApplicationRecord
   validates :slug, uniqueness: true
   validates :url, url: true
   validates :slug, length: { maximum: 10 }
-
-  # Having issues here with preventing space characters in slug
-  # validates :slug, format: {
-  #   with: /[^\s]/,
-  #   message: 'invalid characters entered'
-  # }
+  validates :slug, format: {
+    with: /\A[a-zA-Z0-9]*\z/,
+    message: 'invalid characters entered'
+  }
   validate :existing_urls
 
   scope :with_count_values, lambda {
