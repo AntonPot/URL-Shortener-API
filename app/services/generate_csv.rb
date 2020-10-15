@@ -1,5 +1,6 @@
 class GenerateCsv
   HEADERS = %w[url slug user_email access_count countries_count].freeze
+
   def self.run(data)
     service = new(data)
 

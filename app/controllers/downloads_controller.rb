@@ -1,4 +1,4 @@
-class DownloadController < ApplicationController
+class DownloadsController < ApplicationController
   def new
     @links = Link.with_count_values.with_user
 

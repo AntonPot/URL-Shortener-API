@@ -8,7 +8,6 @@ module Links
     def self.run(args)
       service = new(args[:user], args[:url], args[:slug])
       service.link
-      service.save_link
 
       service
     end
@@ -22,7 +21,7 @@ module Links
     end
 
     def link
-      @link ||= user.links.new(url: url, slug: slug)
+      @link ||= user.links.create(url: url, slug: slug)
     end
 
     def alert_message
@@ -31,10 +30,6 @@ module Links
 
     def successful?
       link.persisted?
-    end
-
-    def save_link
-      link.save
     end
   end
 end

@@ -5,7 +5,8 @@ class GeoapiResponseHandler
   def self.run(response)
     service = new(response)
     service.validate_response_status
-    service.validate_response_values
+    service.build_data_hash
+    service.validate_response_body
     service.snakify_keys
     service.remove_redundand_values
 
@@ -19,13 +20,15 @@ class GeoapiResponseHandler
   end
 
   def validate_response_status
-    raise StandardError unless response.code == 200
+    raise StandardError, 'Geoapi response failure' unless response.code == 200
+  end
 
+  def build_data_hash
     @data = response.to_h
   end
 
-  def validate_response_values
-    raise StandardError unless data.keys.eql?(EXPECTED_VALUES)
+  def validate_response_body
+    raise StandardError, 'Expected values are missing' unless data.keys.eql?(EXPECTED_VALUES)
   end
 
   def snakify_keys

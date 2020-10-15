@@ -1,10 +1,10 @@
 FactoryBot.define do
   factory :link do
-    before(:create) do |link, _|
+    before(:build, :create) do |link, _|
       link.user = create(:user)
     end
 
     url { 'https://google.com' }
-    sequence(:slug) { |n| "test_slug-#{n}" }
+    sequence(:slug) { |n| "slug#{n}" }
   end
 end

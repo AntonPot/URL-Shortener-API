@@ -9,7 +9,7 @@ class Link < ApplicationRecord
 
   before_validation :assign_slug
 
-  validates :url, :slug, presence: true
+  validates :url, :slug, :user_id, presence: true
   validates :slug, uniqueness: true
   validates :url, url: true
   validates :slug, length: { maximum: 10 }
@@ -17,7 +17,7 @@ class Link < ApplicationRecord
     with: /\A[a-zA-Z0-9]*\z/,
     message: 'invalid characters entered'
   }
-  validate :existing_urls
+  validate :url_uniqueness
 
   scope :with_count_values, lambda {
     select(:url, :slug).select <<~SQL
@@ -52,7 +52,7 @@ class Link < ApplicationRecord
     end
   end
 
-  def existing_urls
+  def url_uniqueness
     errors.add(:url, 'is already in DB') if Link.where(url: url, user: user).exists?
   end
 end
