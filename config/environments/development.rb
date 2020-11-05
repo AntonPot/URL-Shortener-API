@@ -60,6 +60,10 @@ Rails.application.configure do
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
-  config.x.host = 'http://localhost:3000'
-  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+  config.x.host = 'http://localhost:3001'
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3001 }
+
+  # Disabled because request origin did not match request base_url error
+  # https://github.com/rails/rails/issues/22965
+  config.action_controller.forgery_protection_origin_check = false
 end

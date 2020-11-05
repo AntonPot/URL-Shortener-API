@@ -8,7 +8,7 @@ RSpec.describe 'Downloads', type: :request do
 
   describe 'GET /new' do
     let(:args) do
-      [GenerateCsv.run(Link.with_count_values.with_user), {filename: "links-on-#{Time.zone.today}.csv"}]
+      [GenerateCsv.run(Link.with_full_info), {filename: "links-on-#{Time.zone.today}.csv"}]
     end
 
     subject { get new_downloads_path, params: {format: :csv} }

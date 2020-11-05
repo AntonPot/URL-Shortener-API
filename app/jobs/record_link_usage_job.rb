@@ -1,17 +1,15 @@
 class RecordLinkUsageJob < ApplicationJob
   queue_as :default
 
-  rescue_from(StandardError) do
-    retry_job(wait: 2.minutes, queue: :default)
-  end
+  discard_on ActiveRecord::RecordInvalid
 
-  def perform(link, ip)
+  def perform(link_id, ip)
     response = Geoapi.fetch(ip)
-    serivce = GeoapiResponseHandler.run(response)
+    service = GeoapiResponseHandler.run(response)
 
     Access.transaction do
-      ip_country = IpCountry.find_or_create_by(serivce.data)
-      Access.create!(address: ip, link: link, ip_country: ip_country)
+      ip_country = IpCountry.find_or_create_by(service.data)
+      Access.create!(address: ip, link_id: link_id, ip_country: ip_country)
     end
   end
 end

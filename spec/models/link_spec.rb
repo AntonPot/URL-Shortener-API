@@ -73,23 +73,36 @@ RSpec.describe Link, type: :model do
     end
   end
 
-  describe 'scope :with_count_values' do
+  describe 'scope :with_access_count' do
     let(:ip_country) { create :ip_country }
     let!(:access) { create :access, ip_country: ip_country, link: link }
-    let(:scoped_link) { Link.with_count_values.first }
+    let(:scoped_link) { Link.with_access_count.first }
 
-    it 'returns access_count and countries_count attributes' do
-      expect(scoped_link.attributes.keys).to include('access_count', 'countries_count')
+    it 'returns access_count attributes' do
+      expect(scoped_link.attributes.keys).to include('access_count')
     end
 
-    it 'counts accesses and ip_countries' do
+    it 'counts accesses' do
       expect(scoped_link.access_count).to be(1)
+    end
+  end
+
+  describe 'scope :with_countries_count' do
+    let(:ip_country) { create :ip_country }
+    let!(:access) { create :access, ip_country: ip_country, link: link }
+    let(:scoped_link) { Link.with_countries_count.first }
+
+    it 'returns countries_count attributes' do
+      expect(scoped_link.attributes.keys).to include('countries_count')
+    end
+
+    it 'counts accesses' do
       expect(scoped_link.countries_count).to be(1)
     end
   end
 
-  describe 'scope :with_user' do
-    let(:scoped_link) { Link.with_user.first }
+  describe 'scope :with_user_email' do
+    let(:scoped_link) { Link.with_user_email.first }
 
     before { link.update(user: user) }
 

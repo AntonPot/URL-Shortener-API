@@ -1,0 +1,5 @@
+json.call(@link, :id, :url)
+json.short_url(@link.short_url)
+json.user_email(@link.user_email)
+json.access_count(@link.access_count)
+json.countries_count(@link.countries_count)

@@ -19,28 +19,35 @@ class Link < ApplicationRecord
   }
   validate :url_uniqueness
 
-  scope :with_count_values, lambda {
-    select(:url, :slug).select <<~SQL
-      (
-        SELECT COUNT (id) FROM accesses
-        WHERE accesses.link_id = links.id
-      ) AS access_count,
-      (
-        SELECT COUNT(DISTINCT ip_countries.id) FROM ip_countries
-        INNER JOIN accesses ON ip_countries.id = accesses.ip_country_id
-        WHERE link_id = links.id
-      ) AS countries_count
+  scope :with_full_info, lambda {
+    select(:id, :url, :slug).with_access_count.with_countries_count.with_user_email
+  }
+
+  scope :with_access_count, lambda {
+    select <<~SQL
+      ( SELECT COUNT (id) FROM accesses
+        WHERE accesses.link_id = links.id ) AS access_count
     SQL
   }
 
-  scope :with_user, lambda {
+  scope :with_countries_count, lambda {
     select <<~SQL
-      (
-        SELECT users.email FROM users
-        WHERE users.id = links.user_id
-      ) AS user_email
+      ( SELECT COUNT(DISTINCT ip_countries.id) FROM ip_countries
+        INNER JOIN accesses ON ip_countries.id = accesses.ip_country_id
+        WHERE link_id = links.id ) AS countries_count
     SQL
   }
+
+  scope :with_user_email, lambda {
+    select <<~SQL
+      ( SELECT users.email FROM users
+        WHERE users.id = links.user_id ) AS user_email
+    SQL
+  }
+
+  def short_url
+    [Rails.configuration.x.host, slug].join('/')
+  end
 
   private
 

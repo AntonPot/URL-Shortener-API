@@ -5,9 +5,9 @@ RSpec.describe RecordLinkUsageJob, type: :job do
 
   let(:link) { create :link }
   let(:ip) { '94.114.243.196' }
-  let(:job) { RecordLinkUsageJob.perform_later(link, ip) }
+  let(:job) { RecordLinkUsageJob.perform_later(link.id, ip) }
 
-  subject { RecordLinkUsageJob.new.perform(link, ip) }
+  subject { RecordLinkUsageJob.new.perform(link.id, ip) }
 
   it 'creates the job' do
     expect { job }.to change(ActiveJob::Base.queue_adapter.enqueued_jobs, :size).by(1)

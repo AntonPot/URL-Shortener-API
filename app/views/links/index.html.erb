@@ -11,6 +11,7 @@
     <table>
       <thead>
         <tr>
+          <th>ID</th>
           <th>Long URL</th>
           <th>Short URL</th>
           <th>Created By</th>
@@ -22,9 +23,9 @@
       <tbody>
         <% @links.each do |link| %>
         <tr>
-          <% short_url = "#{Rails.configuration.x.host}/#{link.slug}"%>
+          <td><a href=<%= link_path(id: link.id) %>><%= link.id %></a></td>
           <td><a href=<%= link.url %>><%= link.url %></a></td>
-          <td><a href=<%= short_url %>><%= short_url %></a></td>
+          <td><a href=<%= link.short_url %>><%= link.slug %></a></td>
           <td><%= link.user_email %></td>
           <td><%= link.access_count %></td>
           <td><%= link.countries_count %></td>

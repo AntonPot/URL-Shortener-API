@@ -6,7 +6,7 @@ RSpec.describe GenerateCsv, type: :service do
   let(:ip_country) { create :ip_country }
   let!(:access) { create :access, ip_country: ip_country, link: link }
 
-  subject(:service) { GenerateCsv.run(Link.with_count_values.with_user) }
+  subject(:service) { GenerateCsv.run(Link.with_full_info) }
 
   it 'generates CSV string' do
     expect(service).to be_kind_of String
