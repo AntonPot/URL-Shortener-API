@@ -4,8 +4,6 @@ RSpec.describe 'Downloads', type: :request do
   let(:user) { create :user }
   let!(:link) { create :link }
 
-  before { sign_in user }
-
   describe 'GET /new' do
     let(:args) do
       [GenerateCsv.run(Link.with_full_info), {filename: "links-on-#{Time.zone.today}.csv"}]

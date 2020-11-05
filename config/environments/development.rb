@@ -61,9 +61,9 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   config.x.host = 'http://localhost:3001'
-  config.action_mailer.default_url_options = { host: 'localhost', port: 3001 }
 
   # Disabled because request origin did not match request base_url error
   # https://github.com/rails/rails/issues/22965
+  # TODO: check if this can be switched
   config.action_controller.forgery_protection_origin_check = false
 end

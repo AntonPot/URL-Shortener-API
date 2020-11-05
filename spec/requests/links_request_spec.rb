@@ -3,8 +3,6 @@ require 'rails_helper'
 RSpec.describe 'Links', type: :request do
   let(:user) { create :user }
 
-  before { sign_in user }
-
   describe 'GET /index' do
     it 'assigns expected links list to @links' do
       get links_path

@@ -1,5 +1,4 @@
 class AccessesController < ApplicationController
-  skip_before_action :authenticate_user!
 
   def show
     @link = Link.with_full_info.where(slug: slug).first
