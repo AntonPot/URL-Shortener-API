@@ -1,7 +1,7 @@
 class LinksController < ApplicationController
   # TODO: solve this! Maybe with ->
   # https://stackoverflow.com/questions/9362910/rails-warning-cant-verify-csrf-token-authenticity-for-json-devise-requests
-  protect_from_forgery with: :null_session
+  # protect_from_forgery with: :null_session
 
   def index
     @links = Link.with_full_info
