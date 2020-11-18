@@ -1,4 +1,6 @@
 class RegistrationsController < ApplicationController
+  skip_before_action :set_current_user
+
   def create
     user = User.create!(
       email: params['user']['email'],

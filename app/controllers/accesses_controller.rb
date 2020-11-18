@@ -1,5 +1,4 @@
 class AccessesController < ApplicationController
-
   def show
     @link = Link.with_full_info.where(slug: slug).first
     return redirect_to(root_path) unless @link

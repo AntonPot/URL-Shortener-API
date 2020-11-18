@@ -1,8 +1,4 @@
 class LinksController < ApplicationController
-  # TODO: solve this! Maybe with ->
-  # https://stackoverflow.com/questions/9362910/rails-warning-cant-verify-csrf-token-authenticity-for-json-devise-requests
-  # protect_from_forgery with: :null_session
-
   def index
     @links = Link.with_full_info
 
@@ -26,9 +22,6 @@ class LinksController < ApplicationController
   end
 
   def create
-    # TODO: Fix current_user with authentication
-    current_user = User.first
-
     service = Links::Create.run(user: current_user, url: link_params[:url], slug: link_params[:slug])
     @link = service.link
     flash[:alert] = service.alert_message
