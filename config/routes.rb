@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :links, only: %i[index new create show destroy]
+  resources :links, only: %i[index create show destroy], defaults: {format: :json}
   resource :downloads, only: :new
   resources :sessions, only: :create
   resources :registrations, only: :create

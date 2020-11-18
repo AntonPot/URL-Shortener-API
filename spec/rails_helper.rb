@@ -3,7 +3,7 @@ require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../config/environment', __dir__)
 # Prevent database truncation if the environment is production
-abort("The Rails environment is running in production mode!") if Rails.env.production?
+abort('The Rails environment is running in production mode!') if Rails.env.production?
 require 'rspec/rails'
 require 'support/factory_bot'
 require 'webmock/rspec'
@@ -38,6 +38,20 @@ module CustomHelpers
   def json_body
     JSON.parse(response.body)
   end
+
+  # Sessions can't be mocked since Rails 5.0+
+  # Instead it's recommended to create an actual login request
+  # https://github.com/rails/rails/issues/23386#issuecomment-178013357
+  def sign_in_as(user)
+    params = {
+      user: {
+        email: user.email,
+        password: 'password',
+        password_confirmation: 'password'
+      }
+    }
+    post sessions_path, params: params
+  end
 end
 
 RSpec.configure do |config|
@@ -51,6 +65,7 @@ RSpec.configure do |config|
 
   config.include CustomHelpers
 
+  config.before(:each, type: :controller) { request.content_type = 'application/json' }
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
 
