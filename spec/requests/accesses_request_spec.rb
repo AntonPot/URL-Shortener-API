@@ -27,14 +27,14 @@ RSpec.describe 'Accesses', type: :request do
     context 'when Link does not exist' do
       subject { get '/foobar' }
 
-      it 'returns status 422' do
+      it 'returns status 404' do
         subject
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:not_found)
       end
 
       it 'returns error message' do
         subject
-        expect(json_body).to eq("Link doesn't exist")
+        expect(json_body).to eq("Couldn't find Link")
       end
     end
   end
