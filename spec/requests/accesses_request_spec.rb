@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Accesses', type: :request do
-  describe 'GET /show' do
+  describe 'GET #show' do
     let!(:link) { create :link }
 
     context 'when Link exists' do

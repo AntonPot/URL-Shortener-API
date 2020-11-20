@@ -5,7 +5,7 @@ RSpec.describe 'Links', type: :request do
 
   before { sign_in_as user }
 
-  describe 'GET /index' do
+  describe 'GET #index' do
     let!(:link) { create :link }
 
     subject { get links_path }
@@ -27,7 +27,7 @@ RSpec.describe 'Links', type: :request do
     end
   end
 
-  describe 'GET /show' do
+  describe 'GET #show' do
     let!(:link) { create :link }
 
     subject { get link_path(id: link.id) }
@@ -48,7 +48,7 @@ RSpec.describe 'Links', type: :request do
     end
   end
 
-  describe 'POST /create' do
+  describe 'POST #create' do
     let(:url) { 'https://google.com' }
     let(:params) do
       {link: {url: url, slug: 'banana', user: user}}
@@ -93,7 +93,7 @@ RSpec.describe 'Links', type: :request do
     end
   end
 
-  describe 'DELETE /destroy' do
+  describe 'DELETE #destroy' do
     let!(:link) { create :link }
 
     subject { delete link_path(link.id) }
