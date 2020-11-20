@@ -50,7 +50,7 @@ module CustomHelpers
         password_confirmation: 'password'
       }
     }
-    post sessions_path, params: params
+    post login_path, params: params
   end
 end
 

@@ -21,8 +21,10 @@ RSpec.describe 'Registrations', type: :request do
         expect(response).to have_http_status(:created)
       end
 
-      it 'returns new user object with email' do
+      it 'returns expected response' do
         subject
+        expect(json_body['status']).to eq('created')
+        expect(json_body['user'].keys).to eq %w[id email created_at updated_at]
         expect(json_body['user']['email']).to eq email
       end
     end
