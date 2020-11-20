@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   delete :logout, to: 'sessions#logout'
   get :logged_in, to: 'sessions#logged_in'
 
-  get '*slug', to: 'accesses#show'
+  get '*slug', to: 'accesses#show', defaults: {format: :json}
 
   root 'links#index'
 end
