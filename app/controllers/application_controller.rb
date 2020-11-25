@@ -13,6 +13,10 @@ class ApplicationController < ActionController::Base
     render json: exception.to_json, status: :not_found
   end
 
+  rescue_from AuthenticationError do |exception|
+    render json: exception.to_json, status: :unauthorized
+  end
+
   private
 
   def inject_public_ip
