@@ -10,8 +10,7 @@ Front-end is written in React and available on [here](https://github.com/AntonPo
 ## Setup
 Postgres:
 ```
-brew install postgresql
-brew services start postgresql
+pg_ctl start -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log
 ```
 
 Install dependencies:
