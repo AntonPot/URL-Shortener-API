@@ -24,25 +24,34 @@ class Link < ApplicationRecord
   }
 
   scope :with_access_count, lambda {
-    select <<~SQL
-      ( SELECT COUNT (id) FROM accesses
-        WHERE accesses.link_id = links.id ) AS access_count
-    SQL
+    links, accesses = %i[links accesses].map { |t| Arel::Table.new(t) }
+
+    select(
+      accesses.project(accesses[:id].count)
+      .where(accesses[:link_id].eq(links[:id]))
+      .as('access_count')
+    )
   }
 
   scope :with_countries_count, lambda {
-    select <<~SQL
-      ( SELECT COUNT(DISTINCT ip_countries.id) FROM ip_countries
-        INNER JOIN accesses ON ip_countries.id = accesses.ip_country_id
-        WHERE link_id = links.id ) AS countries_count
-    SQL
+    links, accesses, ip_countries = %i[links accesses ip_countries].map { |t| Arel::Table.new(t) }
+
+    select(
+      ip_countries.project(ip_countries[:id].count(distinct: true))
+      .join(accesses).on(ip_countries[:id].eq(accesses[:ip_country_id]))
+      .where(accesses[:link_id].eq(links[:id]))
+      .as('countries_count')
+    )
   }
 
   scope :with_user_email, lambda {
-    select <<~SQL
-      ( SELECT users.email FROM users
-        WHERE users.id = links.user_id ) AS user_email
-    SQL
+    links, users = %i[links users].map { |t| Arel::Table.new(t) }
+
+    select(
+      users.project(users[:email])
+      .where(users[:id].eq(links[:user_id]))
+      .as('user_email')
+    )
   }
 
   def short_url
